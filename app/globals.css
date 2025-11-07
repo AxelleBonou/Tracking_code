@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+  
+  /* Western Union Brand Colors */
+  --wu-yellow: #F6E05E;
+  --wu-blue: #4299E1;
+  --wu-dark-blue: #2C5282;
+  --wu-gray-800: #2D3748;
+  --wu-gray-700: #4A5568;
+  --wu-gray-600: #718096;
+  --wu-gray-400: #A0AEC0;
+  --wu-gray-300: #CBD5E0;
+  --wu-gray-200: #EDF2F7;
+  --wu-gray-100: #F7FAFC;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  
+  /* Western Union colors */
+  --color-wu-yellow: var(--wu-yellow);
+  --color-wu-blue: var(--wu-blue);
+  --color-wu-dark: var(--wu-gray-800);
+  --color-wu-gray-light: var(--wu-gray-200);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}

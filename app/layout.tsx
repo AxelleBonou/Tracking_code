@@ -14,7 +14,11 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Track a Transfer | Western Union",
-  description: "Track your Western Union money transfer with your 10-digit MTCN tracking number",
+  description:
+    "Track your Western Union money transfer with your 10-digit MTCN tracking number",
+  icons: {
+    icon: "data:," // 👈 indique “pas de favicon”
+  },
 };
 
 export default function RootLayout({
